@@ -3,6 +3,8 @@ const morgan = require('morgan');
 const cors = require('cors');
 require('dotenv').config({ path: "./config/config.env" })
 const connectDB = require('./config/db')
+const fs = require('fs');
+const router = fs.readdirSync('./routes')
 
 
 
@@ -16,6 +18,7 @@ if (process.env.NODE_ENV == 'development') {
 }
 
 connectDB()
+router.map((r) => app.use("/api/v1", require('./routes/' + r)))
 
 
 
