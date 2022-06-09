@@ -1,6 +1,5 @@
 const User = require('../models/user');
 
-
 exports.addUser = async (req, res) => {
     try {
         const { name, email, street, zip, password, isAdmin, phone, country, apartment } = req.body
@@ -15,18 +14,17 @@ exports.addUser = async (req, res) => {
         }
 
         const user = await User.create({ name, email, street, zip, password, isAdmin, phone, country, apartment })
+        console.log(user);
         if (!user) {
             return res.status(500).json({
                 success: false,
                 msg: "User create failed"
             })
         }
-        res.json({
-            success: true,
-            data: user
-        })
 
+        sendJwtToken(user, 201, res)
     } catch (err) {
+        console.log(err);
         res.status(500).json({
             success: false,
             error: "Server Error"
@@ -97,11 +95,8 @@ exports.login = async (req, res) => {
             })
         }
 
-        res.json({
-            success: true,
-            data: user,
-            msg: "Login successful"
-        })
+        sendJwtToken(user, 200, res)
+
 
     } catch (err) {
         console.log(err);
@@ -110,4 +105,45 @@ exports.login = async (req, res) => {
             error: "Server Error"
         })
     }
+}
+
+
+exports.update = async (req, res) => {
+    try {
+
+        const { name, email, street, zip, password, isAdmin, phone, country, apartment, id } = req.body
+        const user = await User.findByIdAndUpdate({ _id: id }, { name, email, street, zip, password, isAdmin, phone, country, apartment }, { new: true, runValidators: true })
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                msg: "No user found with this id"
+            })
+        }
+
+
+        sendJwtToken(user, 200, res)
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: "Server Error"
+        })
+    }
+}
+
+
+const sendJwtToken = async (user, statusCode, res) => {
+    const token = await user.getJwtToken()
+    const options = {
+        expires: new Date(Date.now() + process.env.JWT_TOKEN_COOKIE_EXPIRES * 24 * 12 * 60 * 1000),
+        httpOnly: true
+    }
+    res
+        .cookie("token", token, options)
+        .status(statusCode).
+        json({
+            token,
+            data: user
+        })
 }
