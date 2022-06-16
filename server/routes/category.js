@@ -5,7 +5,6 @@ const { createCategory, getCategory, updateCategory, getCategories, deleteCatego
 
 const { requireSignin, isAdmin, checkAuth } = require('../middleware/auth')
 
-
 router.post('/category/create', requireSignin, isAdmin, checkAuth, createCategory)
 router.get('/category/:slug', getCategory)
 router.put('/category/:slug', requireSignin, isAdmin, checkAuth, updateCategory)
