@@ -45,11 +45,26 @@ exports.createOrder = async (req, res) => {
         })
 
     } catch (err) {
-        console.log(err);
         res.status(500).json({
             success: false,
             error: "Server Error"
         })
     }
 
+}
+
+
+exports.orders = async (req, res) => {
+    try {
+        const orders = await Order.find({}).populate('orderBy');
+        res.json({
+            success: true,
+            data: orders,
+        })
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: "Server Error"
+        })
+    }
 }
