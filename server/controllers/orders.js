@@ -56,12 +56,36 @@ exports.createOrder = async (req, res) => {
 
 exports.orders = async (req, res) => {
     try {
-        const orders = await Order.find({}).populate('orderBy');
+        const orders = await Order.find({}).populate('orderBy', 'name email isAdmin').sort({ createdAt: -1 })
         res.json({
             success: true,
             data: orders,
         })
     } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: "Server Error"
+        })
+    }
+}
+exports.order = async (req, res) => {
+    try {
+        const order = await Order.findOne({ _id: req.params.id })
+            .populate('orderBy', 'name email isAdmin')
+            // .populate({ path: 'orderItems', populate: 'product' }) //nested populate
+            .populate({ path: 'orderItems', populate: { path: 'product', populate: 'category' } }) //inside nested populate
+        res.json({
+            success: true,
+            data: order,
+        })
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                msg: "Invalid Ordre Id"
+            })
+        }
+    } catch (err) {
+        console.log(err)
         res.status(500).json({
             success: false,
             error: "Server Error"
