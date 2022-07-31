@@ -207,3 +207,23 @@ exports.orderCount = async (req, res) => {
         })
     }
 }
+
+
+exports.userOrders = async (req, res) => {
+    try {
+        const { orderBy } = req.params
+        const orders = await Order.find({ orderBy })
+        if (!orders) {
+            return res.status(404).json({ msg: 'No orders found' })
+        }
+        res.json({
+            orders
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            success: false,
+            error: "Server Error"
+        })
+    }
+}
