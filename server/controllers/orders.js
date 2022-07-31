@@ -13,7 +13,7 @@ exports.createOrder = async (req, res) => {
                 product: order.product
             })
             newOrderItem = await newOrderItem.save();
-            console.log(newOrderItem);
+            // console.log(newOrderItem);
             return newOrderItem._id
         }))
         const newOrderItemResolved = await orderItemsIds
@@ -82,6 +82,19 @@ exports.order = async (req, res) => {
             })
         }
 
+
+        let totalPrice = 0;
+
+        // const length = order.orderItems && order.orderItems.length
+        // console.log(order)
+
+        // for (let i = 0; i < length; i++) {
+        //     totalPrice += (order.orderItems[i].quantity * order.orderItems[i].product.price);
+
+        // }
+        // console.log(totalPrice);
+
+
         res.json({
             success: true,
             data: order,
@@ -141,6 +154,32 @@ exports.deleteOrder = async (req, res) => {
 
     }
     catch (err) {
+        console.log(err)
+        res.status(500).json({
+            success: false,
+            error: "Server Error"
+        })
+    }
+}
+
+
+
+exports.totalSales = async (req, res) => {
+    try {
+
+        const sales = await Order.aggregate([
+            { $group: { _id: null, totalSales: { $sum: '$totalPrice' } } }
+        ])
+
+        if (!sales) {
+            return res.status(404).json({ msg: 'No sales found' })
+        }
+
+        res.json({
+            totalSales: sales.pop().totalSales
+        })
+
+    } catch (err) {
         console.log(err)
         res.status(500).json({
             success: false,
