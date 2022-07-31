@@ -74,17 +74,73 @@ exports.order = async (req, res) => {
             .populate('orderBy', 'name email isAdmin')
             // .populate({ path: 'orderItems', populate: 'product' }) //nested populate
             .populate({ path: 'orderItems', populate: { path: 'product', populate: 'category' } }) //inside nested populate
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                msg: "Invalid order Id"
+            })
+        }
+
         res.json({
             success: true,
             data: order,
         })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            success: false,
+            error: "Server Error"
+        })
+    }
+}
+exports.updateStatus = async (req, res) => {
+    try {
+        const { id } = req.params
+        const { orderStatuts } = req.body;
+        const order = await Order.findByIdAndUpdate({ _id: id }, { status: orderStatuts }, { new: true })
+
         if (!order) {
             return res.status(404).json({
                 success: false,
-                msg: "Invalid Ordre Id"
+                msg: "Invalid order Id OR no order found with this id"
             })
         }
+
+        res.json({
+            success: true,
+            data: order,
+        })
     } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            success: false,
+            error: "Server Error"
+        })
+    }
+}
+exports.deleteOrder = async (req, res) => {
+    try {
+        const { id } = req.params
+        Order.findByIdAndRemove({ _id: id }).then(async order => {
+            if (!order) {
+                return res.status(404).json({
+                    success: false,
+                    msg: "Invalid order Id"
+                })
+            }
+            order.orderItems.map(async orderItem => {
+                await OrderItems.findByIdAndRemove(orderItem)
+            })
+            res.json({
+                success: true,
+                msg: "Order Deleted"
+            })
+
+        })
+
+    }
+    catch (err) {
         console.log(err)
         res.status(500).json({
             success: false,
