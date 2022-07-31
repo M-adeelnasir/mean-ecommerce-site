@@ -187,3 +187,23 @@ exports.totalSales = async (req, res) => {
         })
     }
 }
+
+exports.orderCount = async (req, res) => {
+    try {
+        const orders = await Order.countDocuments()
+
+        if (!orders) {
+            return res.status(404).json({ msg: 'No orders found' })
+        }
+
+        res.json({
+            orders
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            success: false,
+            error: "Server Error"
+        })
+    }
+}
