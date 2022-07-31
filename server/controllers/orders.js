@@ -18,6 +18,16 @@ exports.createOrder = async (req, res) => {
         }))
         const newOrderItemResolved = await orderItemsIds
 
+        let totalPrice = 0
+
+        await Promise.all(newOrderItemResolved.map(async orderItem => {
+            const item = await OrderItems.findById(orderItem).populate('product', 'price')
+
+            totalPrice += item.quantity * item.product.price
+
+        }))
+
+
 
         let order = await new Order({
             orderItems: newOrderItemResolved,
@@ -27,7 +37,7 @@ exports.createOrder = async (req, res) => {
             country: req.body.country,
             phone: req.body.phone,
             status: req.body.status,
-            totalPrice: req.body.totalPrice,
+            totalPrice: totalPrice,
             orderBy: req.body.orderBy,
         })
         order = await order.save();
@@ -212,7 +222,7 @@ exports.orderCount = async (req, res) => {
 exports.userOrders = async (req, res) => {
     try {
         const { orderBy } = req.params
-        const orders = await Order.find({ orderBy })
+        const orders = await Order.find({ orderBy }).sort({ createdAt: -1 }).populate({ path: 'orderItems', populate: { path: 'product', populat: 'category' } })
         if (!orders) {
             return res.status(404).json({ msg: 'No orders found' })
         }

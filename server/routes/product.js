@@ -6,12 +6,12 @@ const { create, update, getProduct, getProducts, deleteProduct, count, getFeatur
 const { requireSignin, isAdmin, checkAuth } = require('../middleware/auth')
 
 
-router.post('/product/create', requireSignin, checkAuth, isAdmin, create)
+router.post('/product/create', create)
 router.get('/products', getProducts)
 router.get('/product/:id', getProduct)
-router.put('/product/:id', requireSignin, checkAuth, isAdmin, update)
-router.delete('/product/:id', requireSignin, checkAuth, isAdmin, deleteProduct)
-router.get('/products/count', requireSignin, checkAuth, isAdmin, count)
+router.put('/product/:id', update)
+router.delete('/product/:id', deleteProduct)
+router.get('/products/count', count)
 router.get('/products/featured', getFeaturedProduct)
 
 

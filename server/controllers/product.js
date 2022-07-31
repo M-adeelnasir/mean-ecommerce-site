@@ -15,6 +15,7 @@ exports.create = async (req, res) => {
             data: product,
         })
     } catch (err) {
+        console.log(err)
         res.status(500).json({
             success: false,
             error: "Server Error"
