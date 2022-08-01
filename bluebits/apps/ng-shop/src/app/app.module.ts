@@ -5,6 +5,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
+import { HeaderComponent } from './shared/header/header.component';
+import { FooterComponent } from './shared/footer/footer.component';
 
 const routes: Routes = [
     { path: '', component: HomePageComponent },
@@ -12,7 +14,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    declarations: [AppComponent],
+    declarations: [AppComponent, HeaderComponent, FooterComponent],
     imports: [BrowserModule, RouterModule.forRoot(routes)],
     providers: [],
     bootstrap: [AppComponent]
