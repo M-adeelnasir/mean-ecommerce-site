@@ -6,6 +6,7 @@ const multer = require('multer')
 exports.create = async (req, res) => {
     try {
         const fileName = req.file.filename
+        console.log(fileName);
         const imageBasePath = `${req.protocol}://${req.get('host')}/api/v1/public/uploads${fileName}`
 
         const product = await Product.create({ ...req.body, image: imageBasePath })
