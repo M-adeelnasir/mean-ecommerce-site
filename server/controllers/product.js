@@ -1,9 +1,14 @@
 const Product = require('../models/product')
+const multer = require('multer')
+
 
 
 exports.create = async (req, res) => {
     try {
-        const product = await Product.create(req.body)
+        const fileName = req.file.filename
+        const imageBasePath = `${req.protocol}://${req.get('host')}/api/v1/public/uploads${fileName}`
+
+        const product = await Product.create({ ...req.body, image: imageBasePath })
         if (!product) {
             return res.status(400).json({
                 success: false,
@@ -15,7 +20,7 @@ exports.create = async (req, res) => {
             data: product,
         })
     } catch (err) {
-        console.log(err)
+        console.log("ERROR==>", err)
         res.status(500).json({
             success: false,
             error: "Server Error"
