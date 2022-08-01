@@ -4,16 +4,15 @@ const cors = require('cors');
 require('dotenv').config({ path: "./config/config.env" })
 const connectDB = require('./config/db')
 const fs = require('fs');
-const path = require('path');
 const router = fs.readdirSync('./routes')
-
-
-
 
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use(cors())
+// app.use(express.static('public/uploads'));
 app.use("/public/uploads", express.static(__dirname + "/public/uploads"));
 
 if (process.env.NODE_ENV == 'development') {
@@ -22,8 +21,6 @@ if (process.env.NODE_ENV == 'development') {
 
 connectDB()
 router.map((r) => app.use("/api/v1", require('./routes/' + r)))
-
-
 
 const PORT = process.env.PORT || 5000
 

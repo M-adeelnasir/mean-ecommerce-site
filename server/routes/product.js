@@ -3,10 +3,6 @@ const router = express.Router();
 const upload = require('../utiles/helper');
 
 
-
-
-
-
 const { create, update, getProduct, getProducts, deleteProduct, count, getFeaturedProduct, galleryImages } = require("../controllers/product");
 
 const { requireSignin, isAdmin, checkAuth } = require('../middleware/auth')

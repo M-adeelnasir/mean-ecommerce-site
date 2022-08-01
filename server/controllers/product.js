@@ -12,7 +12,7 @@ exports.create = async (req, res) => {
                 error: "No Image Uploaded Please upload image"
             })
         }
-        const imageBasePath = `${req.protocol}://${req.get('host')}/api/v1/public/uploads/${fileName}`
+        const imageBasePath = `${req.protocol}://${req.get('host')}/public/uploads/${fileName}`
 
         const product = await Product.create({ ...req.body, image: imageBasePath })
         if (!product) {
@@ -179,7 +179,7 @@ exports.galleryImages = async (req, res) => {
 
         for (let i = 0; i < images.length; i++) {
 
-            const imgUrl = `${req.protocol}://${req.get('host')}/api/v1/public/uploads/${images[i].filename}`
+            const imgUrl = `${req.protocol}://${req.get('host')}/public/uploads/${images[i].filename}`
             imagesPath.push(imgUrl)
         }
 
