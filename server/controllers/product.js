@@ -6,8 +6,13 @@ const multer = require('multer')
 exports.create = async (req, res) => {
     try {
         const fileName = req.file.filename
-        console.log(fileName);
-        const imageBasePath = `${req.protocol}://${req.get('host')}/api/v1/public/uploads${fileName}`
+        if (!fileName) {
+            return res.status(404).json({
+                success: false,
+                error: "No Image Uploaded Please upload image"
+            })
+        }
+        const imageBasePath = `${req.protocol}://${req.get('host')}/api/v1/public/uploads/${fileName}`
 
         const product = await Product.create({ ...req.body, image: imageBasePath })
         if (!product) {
@@ -154,10 +159,39 @@ exports.getFeaturedProduct = async (req, res) => {
             })
         }
         res.status(200).json({
-            data: product,
+            data: products,
             success: true
         })
     } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: "Server Error"
+        })
+    }
+}
+
+exports.galleryImages = async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const images = req.files
+        let imagesPath = []
+
+
+        for (let i = 0; i < images.length; i++) {
+
+            const imgUrl = `${req.protocol}://${req.get('host')}/api/v1/public/uploads/${images[i].filename}`
+            imagesPath.push(imgUrl)
+        }
+
+        const product = await Product.findByIdAndUpdate(productId, { images: imagesPath }, { new: true })
+
+        res.json({
+            success: true,
+            product
+        })
+
+    } catch (err) {
+        console.log(err);
         res.status(500).json({
             success: false,
             error: "Server Error"
