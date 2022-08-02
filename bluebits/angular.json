@@ -5,6 +5,10 @@
         "admin": "apps/admin",
         "admin-e2e": "apps/admin-e2e",
         "ng-shop": "apps/ng-shop",
-        "ng-shop-e2e": "apps/ng-shop-e2e"
+        "ng-shop-e2e": "apps/ng-shop-e2e",
+        "orders": "libs/orders",
+        "products": "libs/products",
+        "ui": "libs/ui",
+        "users": "libs/users"
     }
 }

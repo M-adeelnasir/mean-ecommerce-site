@@ -14,7 +14,12 @@
         "skipLibCheck": true,
         "skipDefaultLibCheck": true,
         "baseUrl": ".",
-        "paths": {}
+        "paths": {
+            "@bluebits/orders": ["libs/orders/src/index.ts"],
+            "@bluebits/products": ["libs/products/src/index.ts"],
+            "@bluebits/ui": ["libs/ui/src/index.ts"],
+            "@bluebits/users": ["libs/users/src/index.ts"]
+        }
     },
     "exclude": ["node_modules", "tmp"]
 }
